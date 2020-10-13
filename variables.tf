@@ -14,5 +14,11 @@ variable "adf_resourcegroup" {
   type        = string
 }
 
+variable "adf_name" {
+  description = "The name to assign to the new Data Factory"
+  type        = string
+}
+
+
 
 
