@@ -1,0 +1,35 @@
+trigger:
+- main
+pool:
+  vmImage: 'ubuntu-20.04'
+variables:
+  - group: SSH-Vars
+  - name: majorVersion
+    value: 1
+  - name: minorVersion
+    value: 0
+
+  
+
+resources:
+  repositories:
+    - repository: tfTemplates                   # Name to assign to this resource within this pipeline.
+      type: git                                 # Repository type. Azure DevOps would be 'git'.
+      name: 'Azure Infrastructure/azuredevops-pipeline-templates' # <project>/<repo>
+
+name: $(majorVersion).$(minorversion).$(Rev:r)
+stages:
+- template: az-infrastructure/terraform-validateBuild.yml@tfTemplates
+  parameters:
+    knownHosts: $(knownHosts)
+    sshPublicKey: $(sshPublicKey)
+    sshPassphrase: $(cicd_user_ssh-pass)
+    sshSecureFile: 'azdo-inn-ssh-key'
+    environment: Build
+    environmentDisplayName: Validate
+    buildName: Terraform-Azure-adf-Module
+    workingDirectory: 
+    deploymentName: ValidateAzureDataFactoryModule
+    terraformVersion: '1.0.0'
+    dependsOn: []
+
