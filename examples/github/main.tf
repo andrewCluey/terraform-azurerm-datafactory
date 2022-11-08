@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "= 3.29.0"
+      version = "= 3.20.0"
     }
   }
 }
@@ -13,17 +13,24 @@ provider "azurerm" {
 
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-full-ex-adf"
+  name     = "rg-gh-ex-adf"
   location = "uksouth"
 }
 
-module "test_full_adf" {
+module "test_gh_adf" {
   source                          = "../../"
-  name                            = "adf-full-ex-t5r"
+  name                            = "adf-gh-ex-t5r"
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
-  public_network_enabled          = false
   managed_virtual_network_enabled = true
+
+  github_configuration = {
+    git_url         = "https://github.com"
+    account_name    = "andrewCluey"
+    repository_name = "azureDataFactory-Dev"
+    branch_name     = "main"
+    root_folder     = "/"
+  }
 
   global_parameters = {
     "testbool" = {
@@ -40,7 +47,7 @@ module "test_full_adf" {
 # Data lookup for Test assertions..
 
 data "azurerm_data_factory" "deployed_adf" {
-  name                = module.test_default_adf.adf_name
+  name                = module.test_gh_adf.adf_name
   resource_group_name = azurerm_resource_group.rg.name
 }
 

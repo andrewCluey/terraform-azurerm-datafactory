@@ -3,11 +3,13 @@
  *
  * 
  * Changes in this version:
- *   
+ *     - Add GitHub configuration to use optional input object (requires v1.3.x of Terraform).
  *
  * Future changes to include:
+ •    
  *   
  */
+
 
 # -------------------------------------------------------------------
 # Create Azure Data Factory
@@ -22,18 +24,18 @@ resource "azurerm_data_factory" "adf" {
   customer_managed_key_identity_id = var.customer_managed_key_identity_id
   tags                             = var.tags
 
-/*
-  dynamic "github_configuration" {
-    for_each = var.github_configuration # conditional
+
+  dynamic github_configuration {
+    for_each = var.github_configuration != null ? [var.github_configuration] : []
     content {
-      account_name    = lookup(github_configuration.value, "account_name", "asda-ecom")
-      branch_name     = lookup(github_configuration.value, "branch", "main")
-      git_url         = lookup(github_configuration.value, "git_url", "https://github.com")
+      git_url         = github_configuration.value.git_url
+      account_name    = github_configuration.value.account_name
+      branch_name     = github_configuration.value.branch_name
       repository_name = github_configuration.value.repository_name
-      root_folder     = lookup(github_configuration.value, "root_folder", "/")
+      root_folder     = github_configuration.value.root_folder
     }
   }
-  */
+  
   dynamic "global_parameter" {
     for_each = var.global_parameters
     content {
@@ -47,16 +49,3 @@ resource "azurerm_data_factory" "adf" {
     type = "SystemAssigned"
   }
 }
-
-
-# -------------------------------------------------------------------
-# Create the Data Factory Self hosted Integration Runtime
-# -------------------------------------------------------------------
-/*
-resource "azurerm_data_factory_integration_runtime_self_hosted" "adf_ir" {
-  count               = var.adf_ir_name == "" ? 0 : 1
-  name                = var.adf_ir_name
-  resource_group_name = var.resource_group_name
-  data_factory_name   = azurerm_data_factory.adf.name
-}
-*/

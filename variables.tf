@@ -6,6 +6,7 @@ variable "name" {
 variable "location" {
   type        = string
   description = "The Azure Region where the Data Factory is to be deployed."
+  default = "uksouth"
 }
 
 variable "resource_group_name" {
@@ -16,14 +17,9 @@ variable "resource_group_name" {
 variable "public_network_enabled" {
   type        = bool
   description = "(Optional) Is the Data Factory visible to the public network? Defaults to true"
-  default     = true
+  default     = false
 }
 
-variable "adf_ir_name" {
-  type        = string
-  description = "If a self-hosted Integration Runtime is required with the Azure data factory deplyment, enter the name here. If left at default, then IR will not be deployed."
-  default     = ""
-}
 
 variable "tags" {
   description = "A map of tags to assign to the new resources."
@@ -34,7 +30,7 @@ variable "tags" {
 variable "managed_virtual_network_enabled" {
   type        = bool
   description = "description"
-  default     = false
+  default     = true
 }
 
 variable "customer_managed_key_id" {
@@ -49,23 +45,22 @@ variable "customer_managed_key_identity_id" {
   default     = null
 }
 
-/*
-
 variable "github_configuration" {
-  type = object({
-    git_url         = optional(string) # - Specifies the GitHub Enterprise host name. For example: https://github.mydomain.com. Default is "https://github.com"
-    account_name    = optional(string) # - Specifies the GitHub account name. Defaults to 'asda-ecom'
-    repository_name = optional(string)           # - Specifies the name of the git repository. 
-    branch_name     = optional(string) # - Specifies the branch of the repository to get code from. Defaults to 'main'
-    root_folder     = optional(string) # - Specifies the root folder within the repository. Defaults to '/' for top level.
-  })
   description = "An input object to define the settings for connecting to GitHub. NOTE! You must log in to the Data Factory management UI to complete the authentication to the GitHub repository."
-  default     = {}
+  type = object({
+    git_url         = optional(string) # - OPTIONAL: Specifies the GitHub Enterprise host name. Defaults to "https://github.com"
+    account_name    = optional(string) # - REQUIRED: Specifies the GitHub account name. Defaults to ''
+    repository_name = optional(string) # - REQUIRED: Specifies the name of the git repository. 
+    branch_name     = optional(string) # - OPTIONAL: Specifies the branch of the repository to get code from. Defaults to 'main'
+    root_folder     = optional(string) # - OPTIONAL: Specifies the root folder within the repository. Defaults to '/' for top level.
+  })
+  default = null
 }
-*/
 
 variable "global_parameters" {
-  type = any
+  type        = any
   description = "An input object to define a global parameter. Accepts multiple entries."
   default     = {}
 }
+
+
