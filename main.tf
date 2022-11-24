@@ -3,7 +3,7 @@
  *
  * 
  * Changes in this version:
- *     - Add GitHub configuration to use optional input object (requires v1.3.x of Terraform).
+ *     - Added optional element to add Azure integrated runtimes.
  *
  * Future changes to include:
  •    
