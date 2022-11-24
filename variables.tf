@@ -6,7 +6,7 @@ variable "name" {
 variable "location" {
   type        = string
   description = "The Azure Region where the Data Factory is to be deployed."
-  default = "uksouth"
+  default     = "uksouth"
 }
 
 variable "resource_group_name" {
@@ -29,7 +29,7 @@ variable "tags" {
 
 variable "managed_virtual_network_enabled" {
   type        = bool
-  description = "description"
+  description = "Is Managed Virtual Network enabled?"
   default     = true
 }
 
@@ -62,5 +62,35 @@ variable "global_parameters" {
   description = "An input object to define a global parameter. Accepts multiple entries."
   default     = {}
 }
+
+variable "azure_integration_runtime" {
+  type = map(object({
+    description             = optional(string, "Azure Integrated Runtime")
+    compute_type            = optional(string, "General")
+    virtual_network_enabled = optional(string, true)
+    core_count              = optional(number, 8)
+    time_to_live_min        = optional(number, 0)
+    cleanup_enabled         = optional(bool, true)
+  }))
+  description = <<EOF
+  Map Object to define any Azure Integration Runtime nodes that required.
+  key of each object is the name of a new node.
+  configuration parameters within the object allow customisation.
+  EXAMPLE:
+  azure_integration_runtime = {
+    az-ir-co-01 {
+      "compute_type" .  = "ComputeOptimized"
+      "cleanup_enabled" = true
+      core_count        = 16
+    },
+    az-ir-gen-01 {},
+    az-ir-gen-02 {},
+  }
+
+EOF
+  default = {}
+}
+
+
 
 

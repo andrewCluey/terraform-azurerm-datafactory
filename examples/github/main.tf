@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 
-resource "azurerm_resource_group" "rg" {
+resource "azurerm_resource_group" "main" {
   name     = "rg-gh-ex-adf"
   location = "uksouth"
 }
@@ -20,8 +20,8 @@ resource "azurerm_resource_group" "rg" {
 module "test_gh_adf" {
   source                          = "../../"
   name                            = "adf-gh-ex-t5r"
-  resource_group_name             = azurerm_resource_group.rg.name
-  location                        = azurerm_resource_group.rg.location
+  resource_group_name             = azurerm_resource_group.main.name
+  location                        = azurerm_resource_group.main.location
   managed_virtual_network_enabled = true
 
   github_configuration = {
@@ -44,14 +44,6 @@ module "test_gh_adf" {
   }
 }
 
-# Data lookup for Test assertions..
 
-data "azurerm_data_factory" "deployed_adf" {
-  name                = module.test_gh_adf.adf_name
-  resource_group_name = azurerm_resource_group.rg.name
-}
 
-output "global_param_look" {
-  value = data.azurerm_data_factory.deployed_adf #.global_parameter["test-string"]
-}
 

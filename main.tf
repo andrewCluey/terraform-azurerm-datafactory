@@ -14,7 +14,7 @@
 # -------------------------------------------------------------------
 # Create Azure Data Factory
 # -------------------------------------------------------------------
-resource "azurerm_data_factory" "adf" {
+resource "azurerm_data_factory" "main" {
   name                             = var.name
   location                         = var.location
   resource_group_name              = var.resource_group_name
@@ -25,7 +25,7 @@ resource "azurerm_data_factory" "adf" {
   tags                             = var.tags
 
 
-  dynamic github_configuration {
+  dynamic "github_configuration" {
     for_each = var.github_configuration != null ? [var.github_configuration] : []
     content {
       git_url         = github_configuration.value.git_url
@@ -35,13 +35,13 @@ resource "azurerm_data_factory" "adf" {
       root_folder     = github_configuration.value.root_folder
     }
   }
-  
+
   dynamic "global_parameter" {
     for_each = var.global_parameters
     content {
-      name  = global_parameter.key  
+      name  = global_parameter.key
       type  = global_parameter.value.type
-      value = global_parameter.value.value 
+      value = global_parameter.value.value
     }
   }
 
@@ -49,3 +49,21 @@ resource "azurerm_data_factory" "adf" {
     type = "SystemAssigned"
   }
 }
+
+# -------------------------------------------------------------------
+# Optional Azure Integration Runtime
+# -------------------------------------------------------------------
+resource "azurerm_data_factory_integration_runtime_azure" "main" {
+  for_each = var.azure_integration_runtime
+
+  name                    = each.key
+  data_factory_id         = azurerm_data_factory.main.id
+  location                = var.location
+  description             = each.value.description
+  compute_type            = each.value.compute_type
+  core_count              = each.value.core_count
+  time_to_live_min        = each.value.time_to_live_min
+  cleanup_enabled         = each.value.cleanup_enabled
+  virtual_network_enabled = each.value.virtual_network_enabled
+}
+

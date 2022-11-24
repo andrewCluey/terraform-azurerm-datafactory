@@ -1,17 +1,17 @@
-output "adf_id" {
+output "id" {
   description = "The ID of the new Datafactory resource."
-  value       = azurerm_data_factory.adf.id
+  value       = azurerm_data_factory.main.id
 }
 
-output "adf_name" {
+output "name" {
   description = "The name of the newly created Azure Data Factory"
-  value = azurerm_data_factory.adf.name
+  value       = azurerm_data_factory.main.name
 }
 
 
 output "global_paramaters" {
   description = "A map showing any created Global Parameters."
-  value       = {for gp in azurerm_data_factory.adf.global_parameter : gp.name => gp}
+  value       = { for gp in azurerm_data_factory.main.global_parameter : gp.name => gp }
 }
 
 
